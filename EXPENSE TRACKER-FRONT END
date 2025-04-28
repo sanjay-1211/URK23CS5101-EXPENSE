@@ -1,0 +1,58 @@
+package expencetracker;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+
+public class ExpenseTrackerGUI extends JFrame {
+
+    private JTextField descriptionField, amountField;
+    private JButton addButton;
+    private JTextArea expenseArea;
+    private static final String FILE_NAME = "expenses.txt";
+
+    private ArrayList<String> expenses = new ArrayList<>();
+
+    public ExpenseTrackerGUI() {
+        setTitle("Expense Tracker");
+        setSize(400, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Top Panel
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(3, 2));
+
+        inputPanel.add(new JLabel("Description:"));
+        descriptionField = new JTextField();
+        inputPanel.add(descriptionField);
+
+        inputPanel.add(new JLabel("Amount:"));
+        amountField = new JTextField();
+        inputPanel.add(amountField);
+
+        addButton = new JButton("Add Expense");
+        inputPanel.add(addButton);
+
+        JButton refreshButton = new JButton("Refresh List");
+        inputPanel.add(refreshButton);
+
+        add(inputPanel, BorderLayout.NORTH);
+
+        // Center Panel
+        expenseArea = new JTextArea();
+        expenseArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(expenseArea);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Load existing expenses
+        loadExpenses();
+        updateExpenseArea();
+
+        // Button Action
+        addButton.addActionListener(e -> addExpense());
+        refreshButton.addActionListener(e -> updateExpenseArea());
+
+        setVisible(true);
+    }
