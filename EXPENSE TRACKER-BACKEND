@@ -1,0 +1,71 @@
+ private void addExpense() {
+        String description = descriptionField.getText().trim();
+        String amountText = amountField.getText().trim();
+
+        if (description.isEmpty() || amountText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both description and amount.");
+            return;
+        }
+
+        try {
+            double amount = Double.parseDouble(amountText);
+            String expense = description + "," + amount;
+            expenses.add(expense);
+            saveExpenses();
+            updateExpenseArea();
+            descriptionField.setText("");
+            amountField.setText("");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Amount must be a valid number.");
+        }
+    }
+
+    private void loadExpenses() {
+        expenses.clear();
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            return; // No file yet
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                expenses.add(line);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error loading expenses: " + e.getMessage());
+        }
+    }
+
+    private void saveExpenses() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+            for (String expense : expenses) {
+                bw.write(expense);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error saving expenses: " + e.getMessage());
+        }
+    }
+
+    private void updateExpenseArea() {
+        loadExpenses(); // reload from file
+        StringBuilder sb = new StringBuilder();
+        double total = 0.0;
+        for (String expense : expenses) {
+            String[] parts = expense.split(",");
+            if (parts.length == 2) {
+                String desc = parts[0];
+                double amt = Double.parseDouble(parts[1]);
+                sb.append(desc).append(": ₹").append(amt).append("\n");
+                total += amt;
+            }
+        }
+        sb.append("\nTotal Expenses: ₹").append(total);
+        expenseArea.setText(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ExpenseTrackerGUI());
+    }
+}
