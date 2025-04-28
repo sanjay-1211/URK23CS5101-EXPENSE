@@ -1,0 +1,15 @@
+package expencetracker;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+
+public class ExpenseTrackerGUI extends JFrame {
+
+    private JTextField descriptionField, amountField;
+    private JButton addButton;
+    private JTextArea expenseArea;
+    private static final String FILE_NAME = "expenses.txt";
+
+    private ArrayList<String> expenses = new ArrayList<>();
